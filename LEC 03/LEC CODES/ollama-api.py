@@ -1,0 +1,17 @@
+from fastapi import FastAPI
+from ollama import Client
+from fastapi import Body
+app = FastAPI()
+
+client = Client(
+    host = 'http://localhost:11434'
+)
+
+client.pull('gemma3:1b')
+@app.post("/chat")
+def chat(message: str = Body(..., description = "Chat messgae")):
+    response = client.chat(model="gemma3:1b", messages = [
+        {"role": "user", "content": "hey there"}
+    ])
+
+    return response['message']['content']
